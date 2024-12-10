@@ -6,6 +6,7 @@ import LoginScreen from '../screen/LoginScreen';
 import SectionsScreen from '../screen/SectionsScreen';
 import OtpScreen from '../screen/OtpScreen';
 import PDFListScreen from '../screen/PDFListScreen';
+import PDFViewerScreen from '../screen/PDFViewerScreen';
 
 const StackNavigation = () => {
     const Stack = createNativeStackNavigator();
@@ -31,6 +32,11 @@ const StackNavigation = () => {
              <Stack.Screen
               name="PDFList"
               component={PDFListScreen}
+              options={{headerShown:false}}
+            />
+             <Stack.Screen
+              name="PDFViewerScreen"
+              component={PDFViewerScreen}
               options={{headerShown:false}}
             />
              </Stack.Navigator>

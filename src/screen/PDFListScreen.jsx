@@ -1,14 +1,19 @@
-import { SafeAreaView, FlatList, Text, TouchableOpacity, Linking, StyleSheet } from 'react-native';
+import { SafeAreaView, FlatList, Dimensions, Text, TouchableOpacity, Linking, StyleSheet, View } from 'react-native';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 const PDFListScreen = ({ route }) => {
   const { pdfList } = route.params;
+  const navigation = useNavigation();
 
-  const handlePDFPress = async (url) => {
-    try {
-      await Linking.openURL(url);
+  const handlePDFPress = async (urlObject) => {
+    const url = urlObject._j;
+    console.log("Url is getting in pdf screen", url);
+    
+    try {  
+    navigation.navigate('PDFViewerScreen',{pdfUrl:url});
     } catch (error) {
-      console.error('Error opening PDF:', error);
+      console.error('Error in navigating to the pdf viewer screen', error);
     }
   };
 
@@ -18,8 +23,8 @@ const PDFListScreen = ({ route }) => {
         data={pdfList}
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.pdfItem} onPress={() => handlePDFPress(item.url)}>
-            <Text style={styles.pdfText}>{item.name}</Text>
+          <TouchableOpacity onPress={() => handlePDFPress(item.url)}>
+            <Text>{item.name}</Text>
           </TouchableOpacity>
         )}
       />
@@ -30,17 +35,13 @@ const PDFListScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: 'white'
+    padding: 16,
   },
-  pdfItem: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#D0D0D0'
-  },
-  pdfText: {
-    fontSize: 18
-  }
+  pdf: {
+    flex:1,
+    width:Dimensions.get('window').width,
+    height:Dimensions.get('window').height,
+}
 });
 
 export default PDFListScreen;
