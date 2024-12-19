@@ -1,77 +1,101 @@
-import {FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useState } from 'react';
-import SectionCard from '../components/SectionCard';
-import storage from '@react-native-firebase/storage';
+import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 
 const SectionsScreen = () => {
   const navigation = useNavigation();
   const [categories, setCategories] = useState([
     { name: 'Maths', folder: 'Maths' },
-    { name: 'English', folder: 'English'},
-    { name: 'GK', folder: 'GK'},
+    { name: 'English', folder: 'English' },
+    { name: 'GK', folder: 'GK' },
     { name: 'LR', folder: 'LR' },
-    { name: 'Hindi', folder: 'Hindi' }
+    { name: 'Hindi', folder: 'Hindi' },
   ]);
 
-  const fetchPDFs = async (folder) => {
-    try {
-      const listResult = await storage().ref(folder).listAll();
-      const pdfList = listResult.items.map(item => ({
-        name: item.name,
-        url: item.getDownloadURL()
-      }));
-      return pdfList;
-    } catch (error) {
-      console.error('Error fetching PDFs:', error);
+  const handleLogout = async () => {
+    const user = auth().currentUser;
+    console.log(user);
+    if (user) {
+      try {
+        await auth().signOut();
+        console.log('User signed out successfully', user.uid);
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        });
+      } catch (error) {
+        console.error('Sign Out Error', error);
+      }
+    } else {
+      console.log('No user currently signed in.');
     }
-  };
-
-  const handleCategoryPress = async (folder) => {
-    const pdfList = await fetchPDFs(folder);
-    navigation.navigate('PDFList', { pdfList });
   };
 
   return (
     <SafeAreaView style={styles.container}>
-    <FlatList
-      data={categories}
-      keyExtractor={(item) => item.folder}
-      renderItem={({ item }) => (
-        <TouchableOpacity style={styles.card} onPress={() => handleCategoryPress(item.folder)}>
-          <Text style={styles.cardText}>{item.name}</Text>
+      <View style={styles.header}>
+        <Text style={styles.sectionName}> Sections </Text>
+        <TouchableOpacity onPress={handleLogout}>
         </TouchableOpacity>
-      )}
-    />
-    <SectionCard/>
-  </SafeAreaView>
+      </View>
+
+      {/* Cards Section */}
+      <FlatList
+        data={categories}
+        numColumns={2}
+        keyExtractor={(item) => item.folder}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => navigation.navigate('PDFList', { folder: item.folder })}
+          >
+            <Text style={styles.cardText}>{item.name}</Text>
+          </TouchableOpacity>
+        )}
+        contentContainerStyle={styles.flatListContainer}
+      />
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding:25,
-    display:'flex',
-    width:"100%",
-    height:"100%",
-    flexDirection:'row',
-    backgroundColor: 'white'
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  sectionName: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  flatListContainer: {
+    paddingHorizontal: 10,
+    paddingVertical: 20,
   },
   card: {
     backgroundColor: '#D0D0D0',
     padding: 20,
     borderRadius: 10,
-    marginBottom: 20,
-    width: '50%',
+    margin: 10,
+    flex: 1,
     alignItems: 'center',
-    backgroundColor:'gray'
+    justifyContent: 'center',
   },
   cardText: {
     fontSize: 20,
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+  },
 });
 
 export default SectionsScreen;
-
-

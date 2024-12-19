@@ -2,6 +2,7 @@ import { Alert, Image, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleShee
 import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth'
+import login_img from '../assets/login_image.jpg'
 
 const LoginScreen = () => {
     const [number, setNumber] = useState(null);
@@ -69,7 +70,9 @@ const LoginScreen = () => {
               width: '95%', 
               height: '100%', 
             }}
+            source={login_img}
             resizeMode='contain'
+
             />       
           </View>
           <View style={{marginTop: 50}}>
@@ -106,8 +109,8 @@ const LoginScreen = () => {
             backgroundColor: 'black',
             marginTop: 50,
             padding: 20,
-            width: 280,
-            borderRadius: 20,
+            width: 340,
+            borderRadius: 10,
             alignItems: 'center',
           }}>
           <Text

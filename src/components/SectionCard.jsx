@@ -2,6 +2,7 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import auth from '@react-native-firebase/auth';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SectionCard = () => {
   const navigation = useNavigation();
@@ -16,6 +17,7 @@ const SectionCard = () => {
           index: 0,
           routes: [{name: 'Login'}],
         });
+        AsyncStorage.removeItem('pdfLists');
       } catch (error) {
         console.error('Sign Out Error', error);
       }
@@ -34,4 +36,6 @@ const SectionCard = () => {
 
 export default SectionCard;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+
+});
